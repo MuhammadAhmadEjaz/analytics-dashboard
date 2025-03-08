@@ -1,0 +1,316 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&family=Orbitron:wght@400;500;600;700&family=Rajdhani:wght@300;400;500;600;700&display=swap');
+
+@layer base {
+  :root {
+    --color-bg-primary: 255 255 255;
+    --color-bg-secondary: 250 250 250;
+    --color-bg-tertiary: 245 245 245;
+    
+    --color-text-primary: 38 38 38;
+    --color-text-secondary: 89 89 89;
+    --color-text-tertiary: 140 140 140;
+    
+    --color-accent-primary: 24 144 255;
+    --color-accent-secondary: 114 46 209;
+    
+    --shadow-color: 0 0 0;
+    --shadow-strength: 5%;
+    
+    --border-color: 217 217 217;
+
+    /* Chart colors */
+    --chart-grid-color: rgba(0, 0, 0, 0.1);
+    --chart-text-color: #262626;
+    --chart-tooltip-bg: rgba(255, 255, 255, 0.95);
+    --chart-tooltip-border: #e0e0e0;
+  }
+
+  .dark {
+    --color-bg-primary: 18 18 18;
+    --color-bg-secondary: 30 30 30;
+    --color-bg-tertiary: 37 37 37;
+    
+    --color-text-primary: 255 255 255;
+    --color-text-secondary: 204 204 204;
+    --color-text-tertiary: 153 153 153;
+    
+    --color-accent-primary: 24 144 255;
+    --color-accent-secondary: 146 84 222;
+    
+    --shadow-color: 0 0 0;
+    --shadow-strength: 15%;
+    
+    --border-color: 51 51 51;
+
+    /* Chart colors for dark mode */
+    --chart-grid-color: rgba(255, 255, 255, 0.1);
+    --chart-text-color: #cccccc;
+    --chart-tooltip-bg: rgba(37, 37, 37, 0.95);
+    --chart-tooltip-border: #333333;
+  }
+  
+  body {
+    @apply bg-neutral-100 text-neutral-900 transition-colors duration-300 ease-in-out dark:bg-dark-bg-primary dark:text-dark-text-primary;
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+      'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+      sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  code {
+    font-family: 'JetBrains Mono', source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+      monospace;
+  }
+}
+
+/* Reusable components */
+@layer components {
+  .card {
+    @apply bg-white dark:bg-dark-bg-secondary rounded-lg shadow-soft-light transition-all duration-300 ease-in-out
+           dark:shadow-soft-dark dark:border-dark-border-subtle dark:border-1;
+  }
+  
+  .card-glass {
+    @apply bg-glass backdrop-blur-sm bg-opacity-80 border border-white border-opacity-20 rounded-lg
+           dark:bg-glass-dark dark:border-dark-border-subtle;
+  }
+  
+  .btn {
+    @apply inline-flex items-center justify-center px-4 py-2 rounded-md font-medium transition-all duration-200
+           focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500;
+  }
+  
+  .btn-primary {
+    @apply bg-primary-600 text-white hover:bg-primary-700 
+           dark:bg-primary-700 dark:hover:bg-primary-800;
+  }
+  
+  .btn-secondary {
+    @apply bg-secondary-600 text-white hover:bg-secondary-700 
+           dark:bg-secondary-700 dark:hover:bg-secondary-800;
+  }
+  
+  .btn-outline {
+    @apply border border-neutral-300 bg-transparent text-neutral-800 hover:bg-neutral-100
+           dark:border-dark-border-strong dark:text-dark-text-primary dark:hover:bg-dark-bg-tertiary;
+  }
+  
+  .input {
+    @apply block w-full px-3 py-2 bg-white border border-neutral-300 rounded-md shadow-sm
+           focus:outline-none focus:ring-primary-500 focus:border-primary-500
+           dark:bg-dark-bg-tertiary dark:border-dark-border-subtle dark:text-dark-text-primary;
+  }
+  
+  .label {
+    @apply block text-sm font-medium text-neutral-700 mb-1 
+           dark:text-dark-text-secondary;
+  }
+  
+  /* Futuristic UI elements */
+  .neon-border {
+    @apply border border-primary-500 shadow-glow;
+  }
+  
+  .glass-panel {
+    @apply bg-white bg-opacity-10 backdrop-blur-md rounded-xl border border-white border-opacity-20 shadow-soft-light
+           dark:bg-black dark:bg-opacity-20 dark:border-dark-border-subtle;
+  }
+  
+  .futuristic-panel {
+    @apply bg-neutral-100 rounded-lg relative overflow-hidden before:absolute before:inset-0 
+           before:bg-gradient-to-r before:from-primary-500/10 before:to-secondary-500/10
+           dark:bg-dark-bg-secondary;
+  }
+  
+  .futuristic-text {
+    @apply font-future tracking-wide;
+  }
+  
+  .tech-text {
+    @apply font-tech;
+  }
+  
+  .code-text {
+    @apply font-mono;
+  }
+  
+  .gradient-text {
+    @apply text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-secondary-600;
+  }
+  
+  .chart-container {
+    @apply p-4 rounded-lg bg-white shadow-soft-light transition-all duration-300 
+           dark:bg-dark-bg-secondary dark:shadow-soft-dark;
+  }
+
+  /* Card hover effect */
+  .card-hover {
+    @apply transition-all duration-300 hover:shadow-md dark:hover:shadow-lg;
+  }
+
+  /* Badge styles */
+  .badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+
+  .badge-primary {
+    @apply bg-primary-100 text-primary-800 dark:bg-primary-900/30 dark:text-primary-300;
+  }
+
+  .badge-success {
+    @apply bg-success-100 text-success-800 dark:bg-success-900/30 dark:text-success-300;
+  }
+
+  .badge-warning {
+    @apply bg-warning-100 text-warning-800 dark:bg-warning-900/30 dark:text-warning-300;
+  }
+
+  .badge-danger {
+    @apply bg-danger-100 text-danger-800 dark:bg-danger-900/30 dark:text-danger-300;
+  }
+
+  /* Tooltip styles */
+  .tooltip {
+    @apply absolute z-10 px-3 py-2 text-sm font-medium text-white bg-neutral-900 rounded-lg shadow-sm dark:bg-dark-bg-tertiary dark:text-dark-text-primary;
+  }
+
+  /* Status indicators */
+  .status-indicator {
+    @apply relative h-2.5 w-2.5 rounded-full;
+  }
+
+  .status-active {
+    @apply bg-success-500;
+  }
+
+  .status-processing {
+    @apply bg-warning-500;
+  }
+
+  .status-inactive {
+    @apply bg-neutral-400 dark:bg-dark-text-tertiary;
+  }
+
+  .status-error {
+    @apply bg-danger-500;
+  }
+
+  /* Enhanced chart styles */
+  .chart-grid line {
+    @apply stroke-neutral-200 dark:stroke-dark-border-subtle;
+  }
+
+  .chart-axis text {
+    @apply fill-neutral-700 dark:fill-dark-text-secondary;
+  }
+
+  .chart-legend text {
+    @apply fill-neutral-700 dark:fill-dark-text-secondary;
+  }
+}
+
+/* Animation Utility Classes */
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.animate-slide-in {
+  animation: slideIn 0.5s ease-in-out;
+}
+
+.animate-zoom-in {
+  animation: zoomIn 0.5s ease-in-out;
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-pulse-slow {
+  animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.animate-shimmer {
+  @apply relative overflow-hidden before:absolute before:inset-0 before:-translate-x-full before:bg-gradient-to-r before:from-transparent before:via-white/20 before:to-transparent;
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+@keyframes slideIn {
+  0% { transform: translateY(20px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes zoomIn {
+  0% { transform: scale(0.95); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+/* Hover animations */
+.hover-scale {
+  @apply transition-transform duration-300;
+}
+
+.hover-scale:hover {
+  @apply transform scale-105;
+}
+
+.hover-lift {
+  @apply transition-all duration-300;
+}
+
+.hover-lift:hover {
+  @apply transform -translate-y-1 shadow-lg;
+}
+
+.hover-glow {
+  @apply transition-all duration-300;
+}
+
+.hover-glow:hover {
+  @apply shadow-glow;
+}
+
+/* Skeleton Loading Animation */
+.skeleton {
+  @apply bg-neutral-200 animate-pulse rounded 
+         dark:bg-dark-bg-tertiary;
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-neutral-200 dark:bg-dark-bg-tertiary;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-neutral-400 rounded-full dark:bg-dark-border-strong;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-neutral-500 dark:bg-dark-text-tertiary;
+} 

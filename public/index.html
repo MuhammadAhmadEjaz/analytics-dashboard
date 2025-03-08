@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#1890FF" />
+    <meta
+      name="description"
+      content="Interactive data visualization dashboard for financial, weather, and social media analytics"
+    />
+    <meta name="keywords" content="data visualization, dashboard, analytics, charts, React" />
+    <meta name="author" content="Your Name" />
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    
+    <!-- Open Graph / Social Media Meta Tags -->
+    <meta property="og:title" content="Analytics Dashboard" />
+    <meta property="og:description" content="Interactive data visualization dashboard for financial, weather, and social media analytics" />
+    <meta property="og:image" content="%PUBLIC_URL%/og-image.jpg" />
+    <meta property="og:url" content="https://your-dashboard-url.com" />
+    <meta property="og:type" content="website" />
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Analytics Dashboard" />
+    <meta name="twitter:description" content="Interactive data visualization dashboard for financial, weather, and social media analytics" />
+    <meta name="twitter:image" content="%PUBLIC_URL%/twitter-image.jpg" />
+    
+    <title>Analytics Dashboard</title>
+    
+    <!-- Preconnect to API domains to improve performance -->
+    <link rel="preconnect" href="https://api.coincap.io" />
+    <link rel="preconnect" href="https://api.openweathermap.org" />
+    
+    <!-- Critical CSS (if needed) -->
+    <style>
+      /* Add any critical CSS here */
+      .loading-screen {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        width: 100vw;
+        background-color: #f5f5f5;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 9999;
+      }
+      .loading-spinner {
+        width: 50px;
+        height: 50px;
+        border: 5px solid #e0e0e0;
+        border-top: 5px solid #1890FF;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .loading-spinner {
+          animation: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <noscript>
+      <div style="padding: 20px; text-align: center;">
+        <h1>JavaScript Required</h1>
+        <p>You need to enable JavaScript to run this app. Here are the <a href="https://www.enable-javascript.com/" target="_blank" rel="noopener noreferrer">instructions on how to enable JavaScript in your web browser</a>.</p>
+      </div>
+    </noscript>
+    
+    <!-- Root div for React app -->
+    <div id="root">
+      <!-- Initial loading state before React loads -->
+      <div class="loading-screen" aria-label="Loading application">
+        <div class="loading-spinner" role="status" aria-hidden="true"></div>
+        <span class="sr-only">Loading application...</span>
+      </div>
+    </div>
+
+    <!-- Add polyfills for older browsers if needed -->
+    <script nomodule src="https://polyfill.io/v3/polyfill.min.js?features=default,es2015,es2016,es2017"></script>
+  </body>
+</html> 
