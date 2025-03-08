@@ -13,6 +13,7 @@ import {
   PieChart,
   Pie
 } from 'recharts';
+import { ChartDataItem } from '../components/ChartModal';
 
 interface AssetData {
   id: string;
@@ -28,10 +29,11 @@ interface AssetData {
   vwap24Hr: string;
 }
 
-interface HistoricalDataPoint {
+interface HistoricalDataPoint extends ChartDataItem {
   priceUsd: string;
   time: number;
   date: string;
+  name: string;
 }
 
 // API endpoints for cryptocurrency data
@@ -156,11 +158,18 @@ const FinancialDashboard: React.FC = () => {
   };
 
   // Process historical data for chart display
-  const processedHistoricalData = historical.map(point => ({
-    date: new Date(point.time).toLocaleDateString(),
-    time: new Date(point.time).toLocaleTimeString(),
-    price: parseFloat(point.priceUsd),
-  }));
+  const processedHistoricalData = historical.map(point => {
+    const dateString = new Date(point.time).toLocaleDateString();
+    const timeString = new Date(point.time).toLocaleTimeString();
+    
+    return {
+      date: dateString,
+      time: timeString,
+      price: parseFloat(point.priceUsd),
+      name: dateString, // Use date as the name to satisfy ChartDataItem
+      priceUsd: point.priceUsd
+    } as ChartDataItem;
+  });
 
   const handleFilterChange = (newFilters: Record<string, string>) => {
     setFilters(newFilters);
@@ -301,6 +310,116 @@ const FinancialDashboard: React.FC = () => {
                 ) : (
                   <div className="flex items-center justify-center h-full">
                     <p className="text-neutral-500 dark:text-dark-text-tertiary">No historical data available</p>
+                  </div>
+                )}
+              </ResponsiveContainer>
+            </ChartContainer>
+          </motion.div>
+
+          {/* Top Cryptocurrencies by Market Cap - TreeMap Visualization */}
+          <motion.div variants={itemVariants}>
+            <ChartContainer 
+              title="Top Cryptocurrencies by Market Cap" 
+              description="Size represents market cap, color represents 24h price change"
+              data={assets.slice(0, 10).map(asset => ({
+                name: asset.symbol,
+                size: parseFloat(asset.marketCapUsd) / 1e9, // Convert to billions
+                change: parseFloat(asset.changePercent24Hr),
+                fullName: asset.name,
+                price: formatPrice(asset.priceUsd)
+              }))}
+              dataKeys={['name', 'size', 'change', 'fullName', 'price']}
+            >
+              <ResponsiveContainer width="100%" height={400}>
+                {assets.length > 0 ? (
+                  <div className="w-full h-full">
+                    <div className="treemap-container relative w-full h-full overflow-hidden bg-neutral-50 dark:bg-dark-bg-tertiary rounded-lg">
+                      {assets.slice(0, 10).map((asset, idx) => {
+                        const marketCapValue = parseFloat(asset.marketCapUsd) / 1e9;
+                        const changeValue = parseFloat(asset.changePercent24Hr);
+                        
+                        // Calculate the size proportionally
+                        const totalMarketCap = assets.slice(0, 10).reduce((sum, a) => sum + parseFloat(a.marketCapUsd) / 1e9, 0);
+                        const sizePercentage = (marketCapValue / totalMarketCap) * 100;
+                        
+                        // Generate a vibrant color based on price change
+                        // Green gradient for positive, red gradient for negative
+                        const getColor = () => {
+                          if (changeValue >= 0) {
+                            // Value from 0 to 1 where 0 is 0% change and 1 is 10%+ change
+                            const intensity = Math.min(changeValue / 10, 1);
+                            return `rgba(${Math.round(46 + intensity * 46)}, ${Math.round(196 - intensity * 30)}, ${Math.round(126 - intensity * 30)}, 0.9)`;
+                          } else {
+                            // Value from 0 to 1 where 0 is 0% change and 1 is -10%+ change
+                            const intensity = Math.min(Math.abs(changeValue) / 10, 1);
+                            return `rgba(${Math.round(236 + intensity * 19)}, ${Math.round(75 - intensity * 30)}, ${Math.round(71 - intensity * 30)}, 0.9)`;
+                          }
+                        };
+                        
+                        return (
+                          <div 
+                            key={asset.id}
+                            className="absolute treemap-item flex flex-col justify-between p-3 overflow-hidden transition-all duration-300 hover:z-10 hover:shadow-lg"
+                            style={{
+                              width: `${Math.sqrt(sizePercentage) * 9}%`,
+                              height: `${Math.sqrt(sizePercentage) * 9}%`,
+                              left: `${(idx % 5) * 20}%`,
+                              top: `${Math.floor(idx / 5) * 50}%`,
+                              backgroundColor: getColor(),
+                              color: 'white',
+                              borderRadius: '6px',
+                              cursor: 'pointer',
+                              transform: 'scale(0.95)',
+                              transformOrigin: 'center',
+                              zIndex: 5 - Math.floor(idx / 5)
+                            }}
+                            onClick={() => {
+                              setSelectedAsset(asset.id);
+                              setFilters(prev => ({ ...prev, assetId: asset.id }));
+                            }}
+                          >
+                            <div className="flex justify-between items-start">
+                              <span className="text-lg font-bold">{asset.symbol}</span>
+                              <span className="text-xs font-medium px-2 py-1 rounded-full bg-white/20">
+                                #{asset.rank}
+                              </span>
+                            </div>
+                            <div className="mt-2">
+                              <div className="text-xs opacity-90">{asset.name}</div>
+                              <div className="flex justify-between items-end mt-1">
+                                <span className="text-sm font-medium">{formatPrice(asset.priceUsd)}</span>
+                                <span 
+                                  className={`text-xs font-bold px-2 py-1 rounded-full ${
+                                    changeValue >= 0 
+                                      ? 'bg-green-500/30 text-white' 
+                                      : 'bg-red-500/30 text-white'
+                                  }`}
+                                >
+                                  {changeValue >= 0 ? '+' : ''}{changeValue.toFixed(2)}%
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                    <div className="mt-4 flex justify-between px-4">
+                      <div className="flex items-center">
+                        <span className="h-3 w-10 bg-gradient-to-r from-green-200 to-green-600 rounded mr-2"></span>
+                        <span className="text-xs text-neutral-600 dark:text-dark-text-secondary">Price Increase</span>
+                      </div>
+                      <div className="flex items-center">
+                        <span className="h-3 w-10 bg-gradient-to-r from-red-200 to-red-600 rounded mr-2"></span>
+                        <span className="text-xs text-neutral-600 dark:text-dark-text-secondary">Price Decrease</span>
+                      </div>
+                      <div className="flex items-center">
+                        <span className="text-xs text-neutral-600 dark:text-dark-text-secondary">Tile Size = Market Cap</span>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-center h-full">
+                    <p className="text-neutral-500 dark:text-dark-text-tertiary">No cryptocurrency data available</p>
                   </div>
                 )}
               </ResponsiveContainer>
@@ -475,8 +594,18 @@ const FinancialDashboard: React.FC = () => {
                         color: isDark ? '#FFFFFF' : '#000000'
                       }}
                       formatter={(value, name) => {
-                        if (name === 'volume') return [`$${value.toFixed(2)}B`, 'Volume'];
-                        if (name === 'change') return [`${value.toFixed(2)}%`, 'Change'];
+                        if (name === 'volume') {
+                          // Handle the case where value might be a string, number, or array
+                          const numValue = typeof value === 'number' ? value : 
+                                          typeof value === 'string' ? parseFloat(value) : 0;
+                          return [`$${numValue.toFixed(2)}B`, 'Volume'];
+                        }
+                        if (name === 'change') {
+                          // Handle the case where value might be a string, number, or array
+                          const numValue = typeof value === 'number' ? value : 
+                                          typeof value === 'string' ? parseFloat(value) : 0;
+                          return [`${numValue.toFixed(2)}%`, 'Change'];
+                        }
                         return [value, name];
                       }}
                     />
